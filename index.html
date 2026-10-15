@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate | Student Task Planner</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #20243a;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+        }
+
+        header {
+            background: #5546e8;
+            color: white;
+            padding: 28px;
+            border-radius: 18px;
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #e5e2ff;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .stat, .panel {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px #20243a0a;
+        }
+
+        .stat p {
+            color: #777b8d;
+            margin-bottom: 10px;
+        }
+
+        .stat h2 {
+            font-size: 28px;
+            color: #5546e8;
+        }
+
+        .panel {
+            margin-bottom: 22px;
+        }
+
+        h2 {
+            margin-bottom: 18px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dfe2ed;
+            border-radius: 9px;
+            font-size: 15px;
+            background: white;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        button {
+            border: none;
+            border-radius: 9px;
+            padding: 12px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .add-btn {
+            background: #5546e8;
+            color: white;
+            width: 100%;
+            margin-top: 16px;
+        }
+
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 0;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .task:last-child {
+            border-bottom: none;
+        }
+
+        .task h3 {
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .task p {
+            color: #777b8d;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .completed h3 {
+            text-decoration: line-through;
+            color: #8b90a0;
+        }
+
+        .actions {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+        .done-btn {
+            background: #e4f8ec;
+            color: #197544;
+        }
+
+        .delete-btn {
+            background: #ffebeb;
+            color: #c53939;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 25px 5px;
+            color: #777b8d;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .filter-row select {
+            max-width: 220px;
+        }
+
+        @media (max-width: 550px) {
+            body {
+                padding: 12px;
+            }
+
+            .stats {
+                gap: 8px;
+            }
+
+            .stat {
+                padding: 12px;
+            }
+
+            .stat h2 {
+                font-size: 23px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .task {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <header>
+            <h1>📚 StudyMate</h1>
+            <p>Plan your studies. Track your progress. Reach your goals.</p>
+        </header>
+
+        <section class="stats">
+            <div class="stat">
+                <p>Total Tasks</p>
+                <h2 id="total">0</h2>
+            </div>
+            <div class="stat">
+                <p>Completed</p>
+                <h2 id="completed">0</h2>
+            </div>
+            <div class="stat">
+                <p>Pending</p>
+                <h2 id="pending">0</h2>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>Add a New Task</h2>
+
+            <form id="taskForm">
+                <div class="form-grid">
+                    <div>
+                        <label for="taskName">Task Name</label>
+                        <input id="taskName" type="text"
+                            placeholder="e.g. Practice Python" required>
+                    </div>
+
+                    <div>
+                        <label for="subject">Subject</label>
+                        <input id="subject" type="text"
+                            placeholder="e.g. Python" required>
+                    </div>
+
+                    <div class="full">
+                        <label for="dueDate">Due Date</label>
+                        <input id="dueDate" type="date" required>
+                    </div>
+                </div>
+
+                <button class="add-btn" type="submit">+ Add Task</button>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>My Tasks</h2>
+
+            <div class="filter-row">
+                <select id="filter">
+                    <option value="all">All Tasks</option>
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+
+            <div id="taskList">
+                <p class="empty">No tasks yet. Add your first task!</p>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        let tasks = [];
+        let nextId = 1;
+
+        const form = document.getElementById("taskForm");
+        const taskList = document.getElementById("taskList");
+        const filter = document.getElementById("filter");
+
+        function renderTasks() {
+            const selected = filter.value;
+
+            const visibleTasks = tasks.filter(task => {
+                if (selected === "pending") return !task.completed;
+                if (selected === "completed") return task.completed;
+                return true;
+            });
+
+            taskList.innerHTML = "";
+
+            if (visibleTasks.length === 0) {
+                taskList.innerHTML =
+                    '<p class="empty">No tasks to display.</p>';
+            }
+
+            visibleTasks.forEach(task => {
+                const item = document.createElement("div");
+                item.className = "task" +
+                    (task.completed ? " completed" : "");
+
+                const details = document.createElement("div");
+                const title = document.createElement("h3");
+                title.textContent = task.name;
+
+                const subject = document.createElement("p");
+                subject.textContent = "Subject: " + task.subject;
+
+                const due = document.createElement("p");
+                due.textContent = "Due: " + task.dueDate;
+
+                const status = document.createElement("p");
+                status.textContent = task.completed
+                    ? "Status: Completed"
+                    : "Status: Pending";
+
+                details.append(title, subject, due, status);
+
+                const actions = document.createElement("div");
+                actions.className = "actions";
+
+                if (!task.completed) {
+                    const done = document.createElement("button");
+                    done.className = "done-btn";
+                    done.textContent = "✓ Complete";
+                    done.onclick = () => {
+                        task.completed = true;
+                        saveTasks();
+                    };
+                    actions.appendChild(done);
+                }
+
+                const remove = document.createElement("button");
+                remove.className = "delete-btn";
+                remove.textContent = "Delete";
+                remove.onclick = () => {
+                    tasks = tasks.filter(t => t.id !== task.id);
+                    saveTasks();
+                };
+
+                actions.appendChild(remove);
+                item.append(details, actions);
+                taskList.appendChild(item);
+            });
+
+            document.getElementById("total").textContent = tasks.length;
+            document.getElementById("completed").textContent =
+                tasks.filter(t => t.completed).length;
+            document.getElementById("pending").textContent =
+                tasks.filter(t => !t.completed).length;
+        }
+
+        function saveTasks() {
+            localStorage.setItem("studymateTasks", JSON.stringify(tasks));
+            renderTasks();
+        }
+
+        function loadTasks() {
+            try {
+                tasks = JSON.parse(
+                    localStorage.getItem("studymateTasks")
+                ) || [];
+
+                nextId = tasks.reduce(
+                    (max, task) => Math.max(max, task.id), 0
+                ) + 1;
+            } catch (error) {
+                tasks = [];
+                nextId = 1;
+            }
+
+            renderTasks();
+        }
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("taskName").value.trim();
+            const subject = document.getElementById("subject").value.trim();
+            const dueDate = document.getElementById("dueDate").value;
+
+            if (!name || !subject || !dueDate) return;
+
+            tasks.push({
+                id: nextId++,
+                name: name,
+                subject: subject,
+                dueDate: dueDate,
+                completed: false
+            });
+
+            saveTasks();
+            form.reset();
+        });
+
+        filter.addEventListener("change", renderTasks);
+
+        loadTasks();
+    </script>
+</body>
+</html>
