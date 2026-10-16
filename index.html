@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyMate | Student Task Planner</title>
+    <title>StudyQueue | Student Task Planner</title>
 
     <style>
         * {
@@ -213,7 +213,7 @@
     <div class="container">
 
         <header>
-            <h1>📚 StudyMate</h1>
+            <h1>📚 StudyQueue</h1>
             <p>Plan your studies. Track your progress. Reach your goals.</p>
         </header>
 
@@ -358,14 +358,14 @@
         }
 
         function saveTasks() {
-            localStorage.setItem("studymateTasks", JSON.stringify(tasks));
+            localStorage.setItem("StudyQueueTasks", JSON.stringify(tasks));
             renderTasks();
         }
 
         function loadTasks() {
             try {
                 tasks = JSON.parse(
-                    localStorage.getItem("studymateTasks")
+                    localStorage.getItem("StudyQueueTasks")
                 ) || [];
 
                 nextId = tasks.reduce(
